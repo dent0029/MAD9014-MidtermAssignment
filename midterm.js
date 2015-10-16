@@ -1,82 +1,104 @@
-var jsonData = JSON.parse (req.responseText);
-var nextperson, loadbutton, pastpeople, nextbutton;
-var isloaded = false;
-var content = { };
-var content_index = 0;
-var index, pastinfo, con_temp;
-
-
-document.addEventListener("DOMContentLoaded", main);
-
-function main();
+//http://stackoverflow.com/questions/4878756/javascript-how-to-capitalize-first-letter-of-each-word-like-a-2-word-city
+function toTitleCase(str) 
 {
-    nextperson-document.querySelector("#output1"); 
-    loadbutton-document.querySelector("#loadBtn"); 
-    pastpeople-document.querySelector("#output2"); 
-    nextbutton-document.querySelector("#showBtn");
-    loadbutton.addEventListener("click",loaddata);    
-}
-
-function loaddata( ); 
-{
-    if (!isloaded)
-    {
-        isloaded = true;
-        loadbutton.classList.remove ("enabled"); 
-        loadbutton.classList.add ("disabled");
-        jsonData.open ('GET', 'js/users.json', true ); 
-        jsonData.onreadystatechange = function ( )
-        { 
-            if (jsonData.readyState == 4)
+    return str.replace(/\w\S*/g, function(txt) 
             {
-                if (jsonData.status == 200)
-                {
-                    nextbutton.classList.remove ("disabled"); 
-                    nextbutton.classList.add ("enabled");
-                    content = JSON.parse (jsonData.responseText);
-                    nextbutton.addEventListener ("click",nextdata);
-                }
-                else
-                {
-                    console.log ("404 event");
-                }
+                return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+            });
+    
+}
+var loadInfo = {};
+var nextPerson = {};
+var jsonInfo = {};
+var currentPerson = 0;
+var ammount;
+var tempFlag = 0;
+var request = new XMLHttpRequest();
+var newInfo = document.getElementById("new");
+var oldInfo = document.getElementById("old");
+var file = 'https://raw.githubusercontent.com/dent0029/MAD9014-MidtermAssignment/gh-pages/users.json';
+var showButtonVal = "Complete";
+
+document.addEventListener("DOMContentLoaded", function (event)
+{
+    loadInfo = document.getElementById("loadButton");
+    nextPerson = document.getElementById("showButton")
+    loadInfo.addEventListener('click', loadData);
+    nextPerson.addEventListener('click', next);
+
+});
+
+function loadInfo() 
+{
+    console.log("loadInfo()");
+    request.open('GET', file, false);
+    request.onreadystatechange = function() 
+    {
+        if(request.readyState === 4) 
+        {
+            if(request.status === 200) 
+            {
+                myData(request.responseText);
             }
         }
     }
+    if (loadInfo.className === 'button enabled') 
+    {
+        request.send(null);
+    }
+
 }
 
-function nextdata( ); 
+function parseJson(obj) 
 {
-    if (content_index < content.length)
+    jsonInfo = JSON.parse(obj);
+    ammount = jsonInfo.length;
+    loadInfo.className = "button disabled";
+    loadInfo.removeEventListener('click', loadInfo);
+    nextPerson.className = "button enabled";
+}
+
+function next() 
+{
+    if (nextPerson.innerHTML != 'Show Next') 
     {
-        con_temp = content[content_index];
-        newinfo.innerHTML="<img src='"+con_temp.image+"'\><h2>"+nameparse(con_temp.firstName,con_temp.lastName)+"</h2><a href='mailto://"+con_temp.email+"'>"+con_temp.email+"</a>";/
+        console.log("Please show next");
+        nextPerson.innerHTML = 'Show Next';
+    }
+
+    if (currentPerson < ammount) 
+    {
+        setFeedByIndex(currentPerson);
+    }
+    if (currentPerson === (ammount - 1)) 
+    {
+        nextPerson.classList.remove = "button enabled" ;
+		nextPerson.classList.add = "button disabled" ;
+		nextPerson.removeEventListener( "click", loadInfo);
+		nextPerson.innerHTML = showButtonVal;
+    }
+    currentPerson++;
+    console.log("next()");
+}
+
+function setFeedByIndex(index) 
+{
+var newInfo = document.getElementById("new");
+    newInfo.innerHTML = '<img src="' + jsonInfo[index]['image'] + '"><h2>' + toTitleCase(jsonInfo[index]['firstName']) + ' ' + toTitleCase(jsonInfo[index]['lastName']) + '</h2><a href="mailto:' + jsonInfo[index]['email'] + '">' + jsonInfo[index]['email'] + '</a></div>';
+    
+    if (currentPerson != 0) 
+        var oldInfo = document.getElementById("old");
+        var data = oldInfo.innerHTML
+    {
+        console.log(tempFlag);
         
-        pastinfo = " ";
-        for (var index=content_index-3;index<content_index;index++)
-        {
-            if (index >= 0)
-            {
-                con_temp = content[index];
-                pastinfo = pastinfo + "<div><img src=" + con_temp.thumbnail + "'\><a href='mailto://" + con_temp.email + "'>" + nameparse (con_temp.firstName,con_temp.lastName) + "</a></div>";
-            }
-        }
-        pastpeople.innerHTML = pastinfo;
-        if  (content_index==0)
-        {
-            nextbutton.innerHTML = "Show Next";
-        }
-        content_index++;
+        info = info + '<div class="oldData"><div><img src="' + jsonInfo[index - 1]['thumbnail'] + '"><a href="mailto:' + jsonInfo [index - 1]['email'] + '">' + toTitleCase(jsonInfo[index - 1]['firstName']) + ' ' + toTitleCase(jsonInfo[index - 1]['lastName']) + '</a></div></div>';
+        
+        oldInfo.innerHTML = info;
     }
-    else
+    if (tempFlag > 2) 
     {
-        nextbutton.classList.add("disabled");
-        nextbutton.classList.remove("enabled");
+        oldInfo.removeChild(oldInfo.childNodes[1]);
     }
-}
-
-
-function nameparse(first, last);
-{
-    return first.substring(0,1).toUpperCase() + first.substring(1,first.length) + " " + last.substring(0,1).toUpperCase() + last.substring(1,last.length);
+    tempFlag++;
 }
