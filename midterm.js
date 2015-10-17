@@ -1,50 +1,41 @@
-//http://stackoverflow.com/questions/4878756/javascript-how-to-capitalize-first-letter-of-each-word-like-a-2-word-city
-function toTitleCase(str) 
-{
-    return str.replace(/\w\S*/g, function(txt) 
-            {
-                return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-            });
-    
-}
 var loadInfo = {};
 var nextPerson = {};
 var jsonInfo = {};
 var currentPerson = 0;
 var ammount;
 var tempFlag = 0;
-var request = new XMLHttpRequest();
-var newInfo = document.getElementById("new");
-var oldInfo = document.getElementById("old");
-var file = 'https://raw.githubusercontent.com/dent0029/MAD9014-MidtermAssignment/gh-pages/users.json';
+var newInfo = document.getElementById("output1");
+var oldInfo = document.getElementById("output2");
 var showButtonVal = "Complete";
 
 document.addEventListener("DOMContentLoaded", function (event)
 {
-    loadInfo = document.getElementById("loadButton");
-    nextPerson = document.getElementById("showButton")
-    loadInfo.addEventListener('click', loadData);
-    nextPerson.addEventListener('click', next);
+    loadInfo = document.getElementById("loadBtn");
+    nextPerson = document.getElementById("showBtn")
+    loadInfo.addEventListener("click", loadInfo);
+    nextPerson.addEventListener("click", next);
 
 });
 
 function loadInfo() 
 {
     console.log("loadInfo()");
-    request.open('GET', file, false);
-    request.onreadystatechange = function() 
+    var request = new XMLHttpRequest();
+    
+    req.open('GET', 'https://raw.githubusercontent.com/dent0029/MAD9014-MidtermAssignment/gh-pages/users.json', false);
+    req.onreadystatechange = function() 
     {
-        if(request.readyState === 4) 
+        if(req.readyState == 4) 
         {
-            if(request.status === 200) 
+            if(req.status == 200) 
             {
-                myData(request.responseText);
+                parseJson(request.responseText);
             }
         }
     }
-    if (loadInfo.className === 'button enabled') 
+    if (loadInfo.className === 'btn enabled') 
     {
-        request.send(null);
+        req.send(null);
     }
 
 }
@@ -53,16 +44,15 @@ function parseJson(obj)
 {
     jsonInfo = JSON.parse(obj);
     ammount = jsonInfo.length;
-    loadInfo.className = "button disabled";
+    loadInfo.className = "btn disabled";
     loadInfo.removeEventListener('click', loadInfo);
-    nextPerson.className = "button enabled";
+    nextPerson.className = "btn enabled";
 }
 
 function next() 
 {
     if (nextPerson.innerHTML != 'Show Next') 
     {
-        console.log("Please show next");
         nextPerson.innerHTML = 'Show Next';
     }
 
@@ -72,8 +62,8 @@ function next()
     }
     if (currentPerson === (ammount - 1)) 
     {
-        nextPerson.classList.remove = "button enabled" ;
-		nextPerson.classList.add = "button disabled" ;
+        nextPerson.classList.remove = "btn enabled" ;
+		nextPerson.classList.add = "btn disabled" ;
 		nextPerson.removeEventListener( "click", loadInfo);
 		nextPerson.innerHTML = showButtonVal;
     }
@@ -83,12 +73,13 @@ function next()
 
 function setFeedByIndex(index) 
 {
-var newInfo = document.getElementById("new");
+var newInfo = document.getElementById("output1");
+    
     newInfo.innerHTML = '<img src="' + jsonInfo[index]['image'] + '"><h2>' + toTitleCase(jsonInfo[index]['firstName']) + ' ' + toTitleCase(jsonInfo[index]['lastName']) + '</h2><a href="mailto:' + jsonInfo[index]['email'] + '">' + jsonInfo[index]['email'] + '</a></div>';
     
     if (currentPerson != 0) 
-        var oldInfo = document.getElementById("old");
-        var data = oldInfo.innerHTML
+        var oldInfo = document.getElementById("output2");
+        var info = oldInfo.innerHTML
     {
         console.log(tempFlag);
         
@@ -101,4 +92,14 @@ var newInfo = document.getElementById("new");
         oldInfo.removeChild(oldInfo.childNodes[1]);
     }
     tempFlag++;
+}
+
+//http://stackoverflow.com/questions/4878756/javascript-how-to-capitalize-first-letter-of-each-word-like-a-2-word-city
+function toTitleCase(str) 
+{
+    return str.replace(/\w\S*/g, function(txt) 
+            {
+                return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+            });
+    
 }
