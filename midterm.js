@@ -1,39 +1,40 @@
-var loadInfo = {};
+var newPerson = {};
 var nextPerson = {};
+var newInfo;
 var jsonInfo = {};
 var currentPerson = 0;
 var ammount;
 var tempFlag = 0;
-var newInfo = document.getElementById("output1");
-var oldInfo = document.getElementById("output2");
+var newInfo;
+var oldInfo;
 var showButtonVal = "Complete";
 
 document.addEventListener("DOMContentLoaded", function (event)
 {
-    loadInfo = document.getElementById("loadBtn");
+    newPerson = document.getElementById("loadBtn");
     nextPerson = document.getElementById("showBtn")
-    loadInfo.addEventListener("click", loadInfo);
-    nextPerson.addEventListener("click", next);
-
+    newPerson.addEventListener("click", loadInfo);
+    newInfo = document.getElementById("output1");
+    oldInfo = document.getElementById("output2");
 });
 
 function loadInfo() 
 {
-    console.log("loadInfo()");
-    var request = new XMLHttpRequest();
+    var req = new XMLHttpRequest();
     
-    req.open('GET', 'https://raw.githubusercontent.com/dent0029/MAD9014-MidtermAssignment/gh-pages/users.json', false);
+    req.open('GET', 'https://raw.githubusercontent.com/dent0029/MAD9014-MidtermAssignment/gh-pages/users.json', true);
     req.onreadystatechange = function() 
     {
         if(req.readyState == 4) 
         {
             if(req.status == 200) 
             {
-                parseJson(request.responseText);
+                parseJson(req.responseText);
+                nextPerson.addEventListener("click", next);
             }
         }
     }
-    if (loadInfo.className === 'btn enabled') 
+    if (newPerson.className === 'btn enabled') 
     {
         req.send(null);
     }
@@ -44,8 +45,9 @@ function parseJson(obj)
 {
     jsonInfo = JSON.parse(obj);
     ammount = jsonInfo.length;
-    loadInfo.className = "btn disabled";
-    loadInfo.removeEventListener('click', loadInfo);
+    console.log(ammount);
+    newPerson.className = "btn disabled";
+    newPerson.removeEventListener('click', loadInfo);
     nextPerson.className = "btn enabled";
 }
 
@@ -60,12 +62,10 @@ function next()
     {
         setFeedByIndex(currentPerson);
     }
-    if (currentPerson === (ammount - 1)) 
+    if (currentPerson > (ammount - 1)) 
     {
-        nextPerson.classList.remove = "btn enabled" ;
-		nextPerson.classList.add = "btn disabled" ;
-		nextPerson.removeEventListener( "click", loadInfo);
-		nextPerson.innerHTML = showButtonVal;
+        nextPerson.removeEventListener("click", next)
+        alert("You have completed the webpage!")
     }
     currentPerson++;
     console.log("next()");
@@ -73,19 +73,18 @@ function next()
 
 function setFeedByIndex(index) 
 {
-var newInfo = document.getElementById("output1");
-    
-    newInfo.innerHTML = '<img src="' + jsonInfo[index]['image'] + '"><h2>' + toTitleCase(jsonInfo[index]['firstName']) + ' ' + toTitleCase(jsonInfo[index]['lastName']) + '</h2><a href="mailto:' + jsonInfo[index]['email'] + '">' + jsonInfo[index]['email'] + '</a></div>';
-    
-    if (currentPerson != 0) 
-        var oldInfo = document.getElementById("output2");
+    newInfo.innerHTML = '<img src="' + jsonInfo[index].image + '"><h2>' + toTitleCase(jsonInfo[index].firstName) + ' ' + toTitleCase(jsonInfo[index].lastName) + '</h2><a href="mailto:' + jsonInfo[index].email + '">' + jsonInfo[index].email + '</a></div>';
+        console.log(newInfo.innerHTML);
+    if (index != 0) 
+        
         var info = oldInfo.innerHTML
     {
-        console.log(tempFlag);
-        
-        info = info + '<div class="oldData"><div><img src="' + jsonInfo[index - 1]['thumbnail'] + '"><a href="mailto:' + jsonInfo [index - 1]['email'] + '">' + toTitleCase(jsonInfo[index - 1]['firstName']) + ' ' + toTitleCase(jsonInfo[index - 1]['lastName']) + '</a></div></div>';
+        if(index>0)
+            
+        { info = info + '<div class="oldInfo"><div><img src="' + jsonInfo[index - 1].thumbnail + '"><a href="mailto:' + jsonInfo[index - 1].email + '">' + toTitleCase(jsonInfo[index - 1].firstName) + ' ' + toTitleCase(jsonInfo[index - 1].lastName) + '</a></div></div>';
         
         oldInfo.innerHTML = info;
+        }
     }
     if (tempFlag > 2) 
     {
